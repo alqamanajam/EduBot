@@ -1706,6 +1706,60 @@ section[data-testid="stSidebar"] [data-testid="stRadio"] label:hover {
     background: rgba(42,157,143,0.20);
     transform: translateX(3px);
 }    
+      /* ===== LOGO POLISH ===== */
+section[data-testid="stSidebar"] img {
+    background: linear-gradient(135deg, #FFFFFF, #E9EEF2);
+    border-radius: 16px;
+    padding: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+}
+
+/* ===== SIDEBAR BRAND HEADER CARD ===== */
+section[data-testid="stSidebar"] > div:first-child {
+    padding-top: 8px;
+}
+
+/* ===== CARD DEPTH UPGRADE (Home / Progress / Quiz cards) ===== */
+[data-testid="stVerticalBlockBorderWrapper"] {
+    border-radius: 20px !important;
+    box-shadow: 0 10px 28px rgba(11,31,58,0.10) !important;
+    border: 1px solid rgba(233,238,242,0.9) !important;
+}
+
+[data-testid="stVerticalBlockBorderWrapper"]:hover {
+    box-shadow: 0 16px 36px rgba(11,31,58,0.16) !important;
+    transform: translateY(-4px) !important;
+}
+
+/* ===== st.success / st.info boxes on Home page — make them card-like ===== */
+[data-testid="stAlert"] {
+    border-radius: 16px !important;
+    padding: 18px 20px !important;
+    box-shadow: 0 6px 18px rgba(11,31,58,0.08) !important;
+    border: none !important;
+}
+
+/* ===== Titles: bigger, bolder, tighter letter spacing ===== */
+h1 {
+    font-weight: 800 !important;
+    letter-spacing: -1px !important;
+}
+
+/* ===== MOBILE RESPONSIVE FIXES ===== */
+@media (max-width: 650px) {
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label {
+        padding: 12px 14px !important;
+        font-size: 15px !important;
+    }
+
+    .main .block-container {
+        padding: 1rem 0.8rem 2rem !important;
+    }
+
+    [data-testid="stVerticalBlockBorderWrapper"] {
+        border-radius: 16px !important;
+    }
+}  
         </style>
         """,
 
