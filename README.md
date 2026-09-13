@@ -1,111 +1,143 @@
-# 🎓 EduBot — AI-Powered Personal Study Assistant
+## 🎓 EduBot — AI-Powered Personal Study Assistant
 
-> HEC-NCEAC & PEC Generative & Agentic AI Training | Cohort 11 | Midterm Hackathon 1
+> Built for **HEC-NCEAC GenAI Cohort 11 — Midterm Hackathon 1**
 
----
+EduBot is an all-in-one AI study companion built with **Streamlit** and **Google Gemini**. It helps students learn faster by combining conversational Q&A, document-grounded answers, personalized tutoring, step-by-step problem solving, and self-testing — all in a single, unified app.
 
-## ✅ Module Status
-
-| Module | Developer | Status |
-|---|---|---|
-| 📄 RAG & Document Q&A | Umar Saeed Jan | ✅ Complete |
-| 🧑‍🏫 AI Tutor + Teach Me Mode | Abdul Qudoos | ✅ Complete |
-| 🔢 Math Solver | Abdul Qudoos | ✅ Complete |
-| 🖼️ Image/Textbook Solver | Abdul Qudoos | ✅ Complete |
-| 💬 AI Q&A | Alqama (Integration) | ✅ Complete |
-| 📃 AI Text Summarizer | Alqama (Integration) | ✅ Complete |
-| 📝 Quiz + Interactive Quiz | Samrah | ✅ Complete |
-| 📊 Progress Dashboard | Samrah | ✅ Complete |
-| 🗺️ Exam Preparation Mode | Full Team | ✅ Complete |
-| 🔗 Final Integration + Deployment | Alqama Najam | ✅ Complete |
+**🔗 Live App:** [edubot-grfqnwapwgywf4n2ze5mwn.streamlit.app](https://edubot-grfqnwapwgywf4n2ze5mwn.streamlit.app)
 
 ---
 
 ## ✨ Features
 
-- 💬 **AI Q&A** — Ask any academic question with level-based answers
-- 📄 **RAG Document Q&A** — Upload PDF, ask questions from it with source citations
-- 🧑‍🏫 **AI Tutor** — Personalized explanations at Beginner / Intermediate / Advanced level
-- 🎯 **Teach Me Mode** — Interactive: Explain → Ask → Evaluate → Correct → Continue
-- 🔢 **Math Solver** — Step-by-step structured math solutions
-- 🖼️ **Image Question Solver** — Gemini Vision reads textbook/handwritten questions
-- 📃 **AI Text Summarizer** — Summarize notes in multiple styles with download
-- 📝 **Quiz Generator** — AI-generated MCQs 
-- 📊 **Progress Dashboard** — Score tracking & weak area detection 
-- 🗺️ **Exam Preparation Mode** — Full study workflow
+| Feature | Description | Status |
+|---|---|---|
+| 💬 **AI Q&A** | Ask any academic question and get level-adjusted explanations | ✅ Ready |
+| 📄 **Document Q&A (RAG)** | Upload a PDF and ask questions grounded strictly in its content | ✅ Ready |
+| 🧑‍🏫 **AI Tutor** | Subject/topic-based conversational tutoring at your chosen level | ✅ Ready |
+| 🎯 **Teach Me Mode** | Interactive teach → check → evaluate → continue learning loop | ✅ Ready |
+| 🔢 **Math Solver** | Step-by-step math solutions with verification | ✅ Ready |
+| 🖼️ **Image Question Solver** | Upload a photo of a question (textbook/handwritten) and get it solved | ✅ Ready |
+| 📝 **Quiz Generator** | AI-generated MCQ quizzes with live scoring and weak-area detection | ✅ Ready |
+| 📊 **Progress Dashboard** | Visual tracking of study streaks, accuracy, and subject progress | ✅ Ready |
+| 🗺️ **Exam Preparation Mode** | Guided workflow across Study → Practice → Quiz → Review | ✅ Ready |
+| 📃 **AI Text Summarizer** | Summarize notes or chapters into concise, revision-ready points | ✅ Ready |
 
 ---
 
-## 🛠️ Tech Stack
+## 🧱 Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend / UI | Streamlit |
-| Language | Python |
-| LLM | Google Gemini 2.5 Flash |
-| RAG | LangChain + ChromaDB |
-| Embeddings | sentence-transformers/all-MiniLM-L6-v2 |
-| Vision/OCR | Gemini Multimodal Vision |
-| Deployment | Streamlit Community Cloud |
+- **Frontend / App Framework:** Streamlit
+- **LLM:** Google Gemini (`gemini-3.6-flash`) via `langchain-google-genai` & `google-generativeai`
+- **RAG / Knowledge Engine:** LangChain, ChromaDB, `sentence-transformers`, `pypdf`
+- **Orchestration:** LangGraph
+- **Language:** Python 3.14
 
 ---
 
-## 📁 Project Structure
+## 📂 Project Structure
 
 ```
 EduBot/
-├── app.py                  ← Main integrated Streamlit app (Alqama)
-├── requirements.txt        ← All dependencies
-├── .env.example            ← API key template
-├── .gitignore
-├── README.md
-├── test_rag.py             ← Umar's RAG test
-└── modules/
-    ├── rag_engine.py       ← PDF processing, embeddings, retrieval (Umar)
-    ├── rag_chain.py        ← LangChain RAG chain (Umar)
-    ├── rag_prompt.py       ← RAG prompt template (Umar)
-    ├── gemini_llm.py       ← Gemini config for RAG (Umar)
-    ├── ai_tutor.py         ← AI Tutor, Teach Me, Math, Image (Abdul)
-    ├── teach_me_mode.py    ← Teach Me session helper (Abdul)
-    ├── math_solver.py      ← Math solver wrapper (Abdul)
-    ├── image_solver.py     ← Image solver wrapper (Abdul)
-    ├── tutor_prompt.py     ← Tutor prompt library (Abdul)
-    └── quiz.py             ← Quiz + Progress (Samrah — in progress)
+├── app.py                # Main Streamlit entry point & page routing
+├── home.py                # Home dashboard UI
+├── ai_tutor.py            # AI Tutor, Math Solver, Image Solver, Teach Me Mode logic
+├── teach_me_mode.py        # Convenience wrapper for Teach Me Mode sessions
+├── rag_engine.py           # PDF chunking, embeddings & vector store (RAG)
+├── rag_chain.py             # RAG retrieval chain
+├── rag_prompt.py             # RAG prompt templates
+├── gemini_llm.py              # Gemini LLM configuration for RAG
+├── quiz.py                     # MCQ generation, scoring, weak-area detection
+├── progress.py                   # Progress Dashboard UI & data
+├── styles.py                       # Global custom CSS / design system
+├── components.py                     # Shared UI components
+├── requirements.txt                    # Python dependencies
+├── .env.example                          # Environment variable template
+└── README.md
 ```
 
 ---
 
-## 🚀 How to Run Locally
+## 👥 Team
+
+| Member | Responsibility |
+|---|---|
+| **Alqama Najam** | Team Lead — Integration, deployment, UI/UX |
+| **Umar Saeed Jan** | RAG & Knowledge Engine |
+| **Abdul Qudoos** | AI Tutor, Math Solver, Image Question Solver |
+| **Samrah** | Quiz Generator, Progress Dashboard, UI styling |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Python 3.10+
+- A [Google Gemini API key](https://aistudio.google.com/app/apikey)
+
+### Installation
 
 ```bash
-# 1. Clone the repo
-git clone https://github.com/YOUR_USERNAME/EduBot.git
+git clone https://github.com/alqamanajam/EduBot.git
 cd EduBot
-
-# 2. Install dependencies
+python -m venv venv
+venv\Scripts\activate        # Windows
+source venv/bin/activate     # macOS/Linux
 pip install -r requirements.txt
+```
 
-# 3. Create .env file
-cp .env.example .env
-# Add your Google AI Studio API key inside .env
+### Configuration
 
-# 4. Run the app
+Copy the example environment file and add your API key:
+
+```bash
+copy .env.example .env       # Windows
+cp .env.example .env         # macOS/Linux
+```
+
+Edit `.env`:
+
+```
+GOOGLE_API_KEY=your_gemini_api_key_here
+```
+
+### Run Locally
+
+```bash
 streamlit run app.py
 ```
 
----
-
-## 🔑 Environment Variables
-
-```env
-GOOGLE_API_KEY=your_google_ai_studio_key_here
-GEMINI_MODEL=gemini-3.6-flash
-```
-
-Get your free key: https://aistudio.google.com/app/apikey
+The app will open at `http://localhost:8501`.
 
 ---
 
+## ☁️ Deployment
+
+EduBot is deployed on **Streamlit Community Cloud**.
+
+1. Push your code to GitHub
+2. Go to [share.streamlit.io](https://share.streamlit.io) → **New app**
+3. Select the repository, branch (`main`), and main file (`app.py`)
+4. Under **Advanced settings → Secrets**, add:
+   ```toml
+   GOOGLE_API_KEY = "your_gemini_api_key_here"
+   ```
+5. Click **Deploy**
+
+---
+
+## 🗺️ Roadmap
+
+- [ ] Personalized practice-question generation for detected weak areas
+- [ ] Multi-language support for explanations
+- [ ] Exportable progress reports
+- [ ] Collaborative study rooms
+
+---
+
+## 📄 License
+
+This project was built for academic purposes as part of the **HEC-NCEAC Generative & Agentic AI Training — Cohort 11**.
 ## 👥 Team
 
 | Member | Role |
