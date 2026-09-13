@@ -14,10 +14,10 @@
 | 🖼️ Image/Textbook Solver | Abdul Qudoos | ✅ Complete |
 | 💬 AI Q&A | Alqama (Integration) | ✅ Complete |
 | 📃 AI Text Summarizer | Alqama (Integration) | ✅ Complete |
-| 📝 Quiz + Interactive Quiz | Samrah | 🔧 In Progress |
-| 📊 Progress Dashboard | Samrah | 🔧 In Progress |
-| 🗺️ Exam Preparation Mode | Full Team | 🔧 Integration Last |
-| 🔗 Final Integration + Deployment | Alqama Najam | 🔧 In Progress |
+| 📝 Quiz + Interactive Quiz | Samrah | ✅ Complete |
+| 📊 Progress Dashboard | Samrah | ✅ Complete |
+| 🗺️ Exam Preparation Mode | Full Team | ✅ Complete |
+| 🔗 Final Integration + Deployment | Alqama Najam | ✅ Complete |
 
 ---
 
@@ -30,8 +30,8 @@
 - 🔢 **Math Solver** — Step-by-step structured math solutions
 - 🖼️ **Image Question Solver** — Gemini Vision reads textbook/handwritten questions
 - 📃 **AI Text Summarizer** — Summarize notes in multiple styles with download
-- 📝 **Quiz Generator** — AI-generated MCQs *(Samrah — coming soon)*
-- 📊 **Progress Dashboard** — Score tracking & weak area detection *(Samrah — coming soon)*
+- 📝 **Quiz Generator** — AI-generated MCQs 
+- 📊 **Progress Dashboard** — Score tracking & weak area detection 
 - 🗺️ **Exam Preparation Mode** — Full study workflow
 
 ---
