@@ -102,7 +102,7 @@ elif menu == "💬 AI Q&A":
         <div class="page-header">
             <div class="page-header-icon">💬</div>
             <h1>AI-Powered Q&A</h1>
-            <p>Ask Anything, EduBot will Explain.</p>
+            <p>Koi bhi academic sawal pucho — EduBot clear explanation dega.</p>
         </div>
         """,
         unsafe_allow_html=True,
@@ -137,7 +137,7 @@ Answer:"""
             answer = call_gemini_direct(prompt)
             st.session_state.qa_history.append({"q": question, "a": answer})
 
-          for item in reversed(st.session_state.qa_history):
+    for item in reversed(st.session_state.qa_history):
         st.markdown(
             f"""
             <div class="qa-answer-card">
