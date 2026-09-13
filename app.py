@@ -137,7 +137,7 @@ Answer:"""
             answer = call_gemini_direct(prompt)
             st.session_state.qa_history.append({"q": question, "a": answer})
 
-        for item in reversed(st.session_state.qa_history):
+          for item in reversed(st.session_state.qa_history):
         st.markdown(
             f"""
             <div class="qa-answer-card">
@@ -148,7 +148,6 @@ Answer:"""
             unsafe_allow_html=True,
         )
         st.markdown(item["a"])
-
 # ══════════════════════════════════════════════════════════════════════════════
 # DOCUMENT Q&A —  ✅
 # ══════════════════════════════════════════════════════════════════════════════
