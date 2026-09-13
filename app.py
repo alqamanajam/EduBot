@@ -161,7 +161,7 @@ Answer:"""
         st.markdown("---")
 
 # ══════════════════════════════════════════════════════════════════════════════
-# DOCUMENT Q&A — Umar's RAG Module ✅
+# DOCUMENT Q&A —  ✅
 # ══════════════════════════════════════════════════════════════════════════════
 elif menu == "📄 Document Q&A (RAG)":
     st.title("📄 Document Q&A")
@@ -220,7 +220,7 @@ elif menu == "📄 Document Q&A (RAG)":
                     st.error(f"❌ Error: {e}")
 
 # ══════════════════════════════════════════════════════════════════════════════
-# AI TUTOR — Abdul's Module ✅
+# AI TUTOR —✅
 # ══════════════════════════════════════════════════════════════════════════════
 elif menu == "🧑‍🏫 AI Tutor":
     st.title("🧑‍🏫 AI Tutor")
@@ -263,7 +263,7 @@ elif menu == "🧑‍🏫 AI Tutor":
         """)
 
 # ══════════════════════════════════════════════════════════════════════════════
-# TEACH ME MODE — Abdul's Module ✅
+# TEACH ME MODE — ✅
 # ══════════════════════════════════════════════════════════════════════════════
 elif menu == "🎯 Teach Me Mode":
     st.title("🎯 Teach Me Mode")
@@ -367,7 +367,7 @@ elif menu == "🎯 Teach Me Mode":
         """)
 
 # ══════════════════════════════════════════════════════════════════════════════
-# MATH SOLVER — Abdul's Module ✅
+# MATH SOLVER  ✅
 # ══════════════════════════════════════════════════════════════════════════════
 elif menu == "🔢 Math Solver":
     st.title("🔢 Math Solver")
@@ -407,7 +407,7 @@ elif menu == "🔢 Math Solver":
         """)
 
 # ══════════════════════════════════════════════════════════════════════════════
-# IMAGE QUESTION SOLVER — Abdul's Module ✅
+# IMAGE QUESTION SOLVER  ✅
 # ══════════════════════════════════════════════════════════════════════════════
 elif menu == "🖼️ Image Question Solver":
     st.title("🖼️ Image Question Solver")
@@ -458,7 +458,7 @@ elif menu == "🖼️ Image Question Solver":
         """)
 
 # ══════════════════════════════════════════════════════════════════════════════
-# QUIZ GENERATOR — Samrah's Module (Placeholder)
+# QUIZ GENERATOR — (Placeholder)
 # ══════════════════════════════════════════════════════════════════════════════
 elif menu == "📝 Quiz Generator":
     st.title("📝 Quiz Generator")
@@ -482,26 +482,14 @@ elif menu == "📝 Quiz Generator":
         st.info("Quiz Generator module under development by Samrah.")
 
 # ══════════════════════════════════════════════════════════════════════════════
-# PROGRESS DASHBOARD — Samrah's Module (Placeholder)
+# PROGRESS DASHBOARD —  (Placeholder)
 # ══════════════════════════════════════════════════════════════════════════════
 elif menu == "📊 Progress Dashboard":
-    st.title("📊 Progress Dashboard")
-    st.markdown("Apne quiz scores, weak areas, aur learning progress track karo.")
-    st.warning("🔧 **Samrah** is building this module. Coming soon!")
-
-    st.markdown("### Features coming:")
-    st.markdown("""
-    - 📈 Score history and improvement tracking
-    - 🎯 Weak topic identification
-    - 🔄 Personalized practice questions for weak areas
-    - 📊 Performance visualization charts
-    """)
-
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Quizzes Taken", "0")
-    col2.metric("Average Score", "0%")
-    col3.metric("Topics Covered", "0")
-
+    try:
+        from progress import progress_page
+        progress_page()
+    except Exception as e:
+        st.error(f"❌ Module load error: {e}")
 # ══════════════════════════════════════════════════════════════════════════════
 # EXAM PREPARATION MODE
 # ══════════════════════════════════════════════════════════════════════════════
