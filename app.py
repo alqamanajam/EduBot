@@ -97,8 +97,16 @@ if menu == "🏠 Home":
 # AI Q&A
 # ══════════════════════════════════════════════════════════════════════════════
 elif menu == "💬 AI Q&A":
-    st.title("💬 AI-Powered Q&A")
-    st.markdown("Koi bhi academic sawal pucho — EduBot clear explanation dega.")
+    st.markdown(
+        """
+        <div class="page-header">
+            <div class="page-header-icon">💬</div>
+            <h1>AI-Powered Q&A</h1>
+            <p>Ask Anything, EduBot will Explain.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
     check_api_key()
 
     level = st.selectbox("Select your level:", ["Beginner", "Intermediate", "Advanced"])
@@ -129,11 +137,17 @@ Answer:"""
             answer = call_gemini_direct(prompt)
             st.session_state.qa_history.append({"q": question, "a": answer})
 
-    for item in reversed(st.session_state.qa_history):
-        st.markdown(f"**🙋 You:** {item['q']}")
-        st.markdown(f"**🤖 EduBot:**")
+        for item in reversed(st.session_state.qa_history):
+        st.markdown(
+            f"""
+            <div class="qa-answer-card">
+                <div class="qa-question">🙋 {item['q']}</div>
+                <div class="qa-answer-label">EduBot's Answer</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
         st.markdown(item["a"])
-        st.markdown("---")
 
 # ══════════════════════════════════════════════════════════════════════════════
 # DOCUMENT Q&A —  ✅
