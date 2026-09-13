@@ -62,10 +62,10 @@ EduBot/
 
 | Member | Responsibility |
 |---|---|
-| **Alqama Najam** | Team Lead — Integration, deployment, UI/UX |
+| **Alqama Najam** | Team Lead — Quiz Generator, Integration, GitHub & deployment, UI/UX |
 | **Umar Saeed Jan** | RAG & Knowledge Engine |
 | **Abdul Qudoos** | AI Tutor, Math Solver, Image Question Solver |
-| **Samrah** | Quiz Generator, Progress Dashboard, UI styling |
+| **Samrah** | Progress Dashboard, UI styling |
 
 ---
 
@@ -138,11 +138,3 @@ EduBot is deployed on **Streamlit Community Cloud**.
 ## 📄 License
 
 This project was built for academic purposes as part of the **HEC-NCEAC Generative & Agentic AI Training — Cohort 11**.
-## 👥 Team
-
-| Member | Role |
-|---|---|
-| **Alqama Najam** | Team Leader,Quiz Generator, Integration, GitHub & Deployment |
-| **Umar Saeed Jan** | RAG & Knowledge Engine |
-| **Abdul Qudoos** | AI Tutor, Teach Me Mode, Math Solver, Image Solver |
-| **Samrah** |  Progress Dashboard, UI/UX |
