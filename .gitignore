@@ -1,6 +1,25 @@
-.venv/
-.venv-1/
-__pycache__/
-*.pyc
+# ── API Keys — KABHI UPLOAD MAT KARNA ──────────────────────
 .env
+
+# ── Python ──────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# ── Virtual environments ────────────────────────────────────
+.venv/
+venv/
+env/
+
+# ── Chroma / Vector DB ──────────────────────────────────────
+chroma_db/
+test_chroma/
+vanderplas_vector_db/
+*.sqlite3
+
+# ── OS ──────────────────────────────────────────────────────
 .DS_Store
+Thumbs.db
+
+# ── Large files — copyright protected ──────────────────────
+*.pdf
