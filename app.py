@@ -87,36 +87,11 @@ def get_llm():
 # HOME
 # ══════════════════════════════════════════════════════════════════════════════
 if menu == "🏠 Home":
-    st.title("🎓 Welcome to EduBot!")
-    st.markdown("### Your AI-Powered Personal Study Assistant")
-    st.markdown("---")
-
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.success("💬 **AI Q&A** ✅ Ready\nAsk any academic question")
-    with col2:
-        st.success("📄 **Document Q&A** ✅ Ready\nUpload PDF and ask questions")
-    with col3:
-        st.success("📃 **AI Summarizer** ✅ Ready\nSummarize notes or chapters")
-
-    col4, col5, col6 = st.columns(3)
-    with col4:
-        st.success("🧑‍🏫 **AI Tutor** ✅ Ready\nPersonalized learning modes")
-    with col5:
-        st.success("🎯 **Teach Me Mode** ✅ Ready\nInteractive teaching workflow")
-    with col6:
-        st.success("🔢 **Math Solver** ✅ Ready\nStep-by-step solutions")
-
-    col7, col8, col9 = st.columns(3)
-    with col7:
-        st.success("🖼️ **Image Solver** ✅ Ready\nSolve from textbook photos")
-    with col8:
-        st.info("📝 **Quiz Generator** 🔧 Coming Soon\nAI-generated MCQs")
-    with col9:
-        st.info("📊 **Progress Dashboard** 🔧 Coming Soon\nTrack your progress")
-
-    st.markdown("---")
-    st.markdown("👈 **Use the sidebar to navigate between features**")
+    try:
+        from home import home_page
+        home_page()
+    except Exception as e:
+        st.error(f"❌ Module load error: {e}")
 
 # ══════════════════════════════════════════════════════════════════════════════
 # AI Q&A
