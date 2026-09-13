@@ -2,7 +2,7 @@
 EduBot Gemini LLM configuration.
 
 The PRD specifies:
-Google Gemini 1.5 Flash
+Google Gemini 3.6 Flash
 """
 
 import os
@@ -15,7 +15,7 @@ load_dotenv()
 
 
 def create_llm():
-    """Create the Gemini 1.5 Flash model."""
+    """Create the Gemini 3.6 Flash model."""
     api_key = os.getenv("GOOGLE_API_KEY")
 
     if not api_key:
@@ -24,7 +24,8 @@ def create_llm():
             "Add it to your environment or .env file."
         )
 
-    return ChatGoogleGenerativeAI(
-        model="gemini-1.5-flash",
+        return ChatGoogleGenerativeAI(
+        model="gemini-3.6-flash",
+        google_api_key=api_key,
         temperature=0
     )
