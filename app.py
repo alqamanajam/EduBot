@@ -438,24 +438,95 @@ elif menu == "🖼️ Image Question Solver":
 elif menu == "📝 Quiz Generator":
     st.title("📝 Quiz Generator")
     st.markdown("Kisi bhi topic pe MCQ quiz generate karo aur khud ko test karo.")
-    st.warning("🔧 **Samrah** is building this module. Coming soon!")
+    check_api_key()
 
-    st.markdown("### Features coming:")
-    st.markdown("""
-    - 📝 MCQ generation with configurable count & difficulty
-    - ✅ Options, correct answers, and explanations
-    - 🏆 Interactive quiz with live scoring
-    - 📊 Performance analysis after quiz
-    - 🎯 Weak area detection
-    - 🔄 Personalized practice questions
-    """)
+    try:
+        from quiz import generate_quiz, calculate_score, detect_weak_areas
+        llm = get_llm()
+    except Exception as e:
+        st.error(f"❌ Module load error: {e}")
+        st.stop()
 
-    topic = st.text_input("Enter topic for quiz:")
-    num_q = st.slider("Number of questions:", 3, 20, 5)
-    difficulty = st.selectbox("Difficulty:", ["Easy", "Medium", "Hard"])
-    if st.button("Generate Quiz"):
-        st.info("Quiz Generator module under development by Samrah.")
+    for key in ["quiz_questions", "quiz_submitted", "quiz_topic"]:
+        if key not in st.session_state:
+            st.session_state[key] = None if key != "quiz_submitted" else False
 
+    col1, col2 = st.columns(2)
+    with col1:
+        topic = st.text_input("Enter topic for quiz:", placeholder="e.g. Photosynthesis")
+    with col2:
+        difficulty = st.selectbox("Difficulty:", ["Easy", "Medium", "Hard"])
+    num_q = st.slider("Number of questions:", 3, 10, 5)
+
+    if st.button("🎲 Generate Quiz", type="primary"):
+        if not topic.strip():
+            st.warning("Please enter a topic first.")
+        else:
+            with st.spinner("🧠 EduBot is generating your quiz..."):
+                try:
+                    questions = generate_quiz(llm, topic, num_q, difficulty)
+                    st.session_state.quiz_questions = questions
+                    st.session_state.quiz_topic = topic
+                    st.session_state.quiz_submitted = False
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"❌ Error generating quiz: {e}")
+
+    if st.session_state.quiz_questions and not st.session_state.quiz_submitted:
+        st.markdown("---")
+        st.markdown(f"### 📝 Quiz: {st.session_state.quiz_topic}")
+
+        user_answers = []
+        for i, q in enumerate(st.session_state.quiz_questions):
+            st.markdown(f"**Q{i+1}. {q['question']}**")
+            choice = st.radio(
+                f"Select answer for Q{i+1}",
+                options=list(q["options"].keys()),
+                format_func=lambda k, opts=q["options"]: f"{k}. {opts[k]}",
+                key=f"quiz_q_{i}",
+                label_visibility="collapsed",
+            )
+            user_answers.append(choice)
+            st.markdown("")
+
+        if st.button("✅ Submit Quiz", type="primary"):
+            st.session_state.quiz_user_answers = user_answers
+            st.session_state.quiz_submitted = True
+            st.rerun()
+
+    if st.session_state.quiz_submitted and st.session_state.quiz_questions:
+        st.markdown("---")
+        questions = st.session_state.quiz_questions
+        user_answers = st.session_state.quiz_user_answers
+        correct_answers = [q["correct"] for q in questions]
+
+        score = calculate_score(user_answers, correct_answers)
+        st.markdown(f"### 🏆 Your Score: {score}%")
+        st.progress(score / 100)
+
+        quiz_results = []
+        for i, q in enumerate(questions):
+            is_correct = user_answers[i] == q["correct"]
+            quiz_results.append({"topic": st.session_state.quiz_topic, "correct": is_correct})
+
+            with st.container(border=True):
+                icon = "✅" if is_correct else "❌"
+                st.markdown(f"{icon} **Q{i+1}. {q['question']}**")
+                st.caption(f"Your answer: {user_answers[i]}. {q['options'][user_answers[i]]}")
+                if not is_correct:
+                    st.caption(f"Correct answer: {q['correct']}. {q['options'][q['correct']]}")
+                st.caption(f"💡 {q.get('explanation', '')}")
+
+        weak_areas = detect_weak_areas(quiz_results)
+        if weak_areas:
+            st.warning(f"🎯 Weak areas detected: {', '.join(weak_areas)} — consider reviewing these with AI Tutor.")
+        else:
+            st.success("🎉 Great job! No weak areas detected in this quiz.")
+
+        if st.button("🔄 Try Another Quiz"):
+            st.session_state.quiz_questions = None
+            st.session_state.quiz_submitted = False
+            st.rerun()
 # ══════════════════════════════════════════════════════════════════════════════
 # PROGRESS DASHBOARD —  (Placeholder)
 # ══════════════════════════════════════════════════════════════════════════════
