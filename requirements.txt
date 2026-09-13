@@ -1,8 +1,7 @@
-# ── Core ────────────────────────────────────────────────────
 streamlit
 python-dotenv
 
-# ── Umar — RAG & Knowledge Engine ───────────────────────────
+# RAG & Knowledge Engine ───────────────────────────
 langchain
 langchain-community
 langchain-text-splitters
@@ -10,13 +9,21 @@ langchain-huggingface
 langchain-chroma
 langchain-google-genai
 langchain-core
+langchain-classic
 chromadb
 sentence-transformers
 pypdf
 
-# ── Abdul — AI Tutor, Math & Image Solver ───────────────────
+#  AI Tutor, Math & Image Solver ───────────────────
 google-generativeai
+google-genai
+google-api-python-client
 Pillow
 
-# ── Samrah — Quiz & Progress (coming soon) ──────────────────
+# ── LangGraph ────────────────────────────────────────────────
+langgraph
+langgraph-prebuilt
+langgraph-checkpoint
+
+— Quiz & Progress ──────────────────
 pandas
