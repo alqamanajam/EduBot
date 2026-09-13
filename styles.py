@@ -1760,6 +1760,91 @@ h1 {
         border-radius: 16px !important;
     }
 }  
+     /* ===== REUSABLE FEATURE-PAGE HEADER (like home-header but for every page) ===== */
+.page-header {
+    background: linear-gradient(135deg, #0B1F3A 0%, #123B5D 100%);
+    padding: 34px 40px;
+    border-radius: 22px;
+    margin-bottom: 26px;
+    color: white;
+    box-shadow: 0 10px 28px rgba(11, 31, 58, 0.16);
+    position: relative;
+    overflow: hidden;
+}
+
+.page-header::after {
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    background: rgba(42,157,143,0.15);
+    border-radius: 50%;
+    right: -60px;
+    top: -90px;
+}
+
+.page-header-icon {
+    font-size: 34px;
+    margin-bottom: 10px;
+}
+
+.page-header h1 {
+    color: white !important;
+    margin: 0 !important;
+    font-size: 30px !important;
+    font-weight: 800 !important;
+    position: relative;
+    z-index: 2;
+}
+
+.page-header p {
+    color: #C9DCE9 !important;
+    margin: 8px 0 0 0 !important;
+    font-size: 14px !important;
+    position: relative;
+    z-index: 2;
+}
+
+/* ===== NICER TEXT INPUTS / TEXT AREAS ===== */
+div[data-testid="stTextInput"] input,
+div[data-testid="stTextArea"] textarea {
+    border-radius: 14px !important;
+    border: 1px solid #DCE4E9 !important;
+    padding: 14px !important;
+    background: white !important;
+}
+
+div[data-testid="stTextInput"] input:focus,
+div[data-testid="stTextArea"] textarea:focus {
+    border-color: #0F766E !important;
+    box-shadow: 0 0 0 2px rgba(15,118,110,0.15) !important;
+}
+
+/* ===== Q&A / ANSWER CARDS ===== */
+.qa-answer-card {
+    background: white;
+    border: 1px solid #E5EAEE;
+    border-radius: 18px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 6px 18px rgba(11,31,58,0.06);
+}
+
+.qa-question {
+    color: #0B1F3A;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.qa-answer-label {
+    color: #0F766E;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}  
         </style>
         """,
 
