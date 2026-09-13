@@ -142,7 +142,7 @@ This project was built for academic purposes as part of the **HEC-NCEAC Generati
 
 | Member | Role |
 |---|---|
-| **Alqama Najam** | Team Leader, Integration, GitHub & Deployment |
+| **Alqama Najam** | Team Leader,Quiz Generator, Integration, GitHub & Deployment |
 | **Umar Saeed Jan** | RAG & Knowledge Engine |
 | **Abdul Qudoos** | AI Tutor, Teach Me Mode, Math Solver, Image Solver |
-| **Samrah** | Quiz Generator, Progress Dashboard, UI/UX |
+| **Samrah** |  Progress Dashboard, UI/UX |
