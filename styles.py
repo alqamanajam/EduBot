@@ -1661,6 +1661,33 @@ div[class*="st-key-qa_card_"] [data-testid="stCaptionContainer"] {
     margin-top: 1px !important;
     padding-left: 2px;
 }
+   /* Sidebar radio menu text visibility fix */
+section[data-testid="stSidebar"] [data-testid="stRadio"] label {
+    color: #FFFFFF !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+}
+
+section[data-testid="stSidebar"] [data-testid="stRadio"] label:hover {
+    color: var(--teal) !important;
+}
+
+section[data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] label div p {
+    color: #FFFFFF !important;
+}
+
+section[data-testid="stSidebar"] .stCaption,
+section[data-testid="stSidebar"] [data-testid="stCaptionContainer"] {
+    color: #AFC0D0 !important;
+}
+
+section[data-testid="stSidebar"] h1,
+section[data-testid="stSidebar"] h2,
+section[data-testid="stSidebar"] h3,
+section[data-testid="stSidebar"] p,
+section[data-testid="stSidebar"] .stMarkdown {
+    color: #FFFFFF !important;
+}
         </style>
         """,
 
