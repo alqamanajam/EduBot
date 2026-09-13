@@ -1,506 +1,217 @@
-import streamlit as st
-from datetime import datetime
+"""
+EduBot - AI Tutor, Math Solver & Image Question Solver
+Developer: Abdul Qudoos
 
+Provides:
+- create_llm()               → configured Gemini chat model
+- tutor_answer()              → AI Tutor Q&A
+- solve_math()                → Math Solver
+- solve_image_question()      → Image Question Solver
+- start_teach_me()            → Teach Me Mode: start a lesson
+- evaluate_teach_me()         → Teach Me Mode: evaluate student's answer
+- extract_checking_question() → pull out the checking question from a response
+- TeachMeSession              → convenience session object used by teach_me_mode.py
+"""
 
-def _html(s: str) -> str:
-    """Flatten a triple-quoted HTML string to zero indentation per line,
-    so Streamlit's markdown parser never mistakes it for a code block."""
-    lines = [line.strip() for line in s.strip("\n").splitlines()]
-    return "\n".join(lines)
+import os
+import re
+import base64
+
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.messages import HumanMessage
 
 
 # =========================================================
-# STATE
+# LLM SETUP
 # =========================================================
 
-def initialize_tutor():
+def create_llm():
+    """Create the configured Gemini model for tutoring, math, and image solving."""
+    api_key = os.getenv("GOOGLE_API_KEY")
 
-    if "tutor_messages" not in st.session_state:
-        st.session_state.tutor_messages = [
+    if not api_key:
+        raise ValueError(
+            "GOOGLE_API_KEY is not set. "
+            "Add it to your environment or .env file."
+        )
+
+    return ChatGoogleGenerativeAI(
+        model="gemini-3.6-flash",
+        google_api_key=api_key,
+        temperature=0.3,
+    )
+
+
+def _ask(llm, prompt: str) -> str:
+    """Send a plain text prompt to the LLM and return the text response."""
+    response = llm.invoke(prompt)
+    return getattr(response, "content", str(response))
+
+
+# =========================================================
+# AI TUTOR
+# =========================================================
+
+def tutor_answer(llm, question: str, level: str, topic: str) -> str:
+    """Answer a student's question at their chosen level, on their chosen topic."""
+    prompt = f"""You are EduBot, a friendly and knowledgeable AI tutor.
+
+Topic: {topic}
+Student level: {level}
+- Beginner: simple language, many examples, avoid jargon
+- Intermediate: balanced explanation with moderate terminology
+- Advanced: detailed technical explanation with deeper concepts
+
+Student question: {question}
+
+Rules:
+1. Answer clearly and in a student-friendly way
+2. Use bullet points or numbered steps when helpful
+3. Give examples where useful
+4. Stay focused on the given topic and level
+
+Answer:"""
+    return _ask(llm, prompt)
+
+
+# =========================================================
+# MATH SOLVER
+# =========================================================
+
+def solve_math(llm, problem: str) -> str:
+    """Solve a math problem step by step with full explanation."""
+    prompt = f"""You are EduBot, an AI math tutor.
+
+Solve the following mathematical problem with full step-by-step working.
+
+Problem: {problem}
+
+Structure your answer with these sections:
+- **Given** — What information is provided
+- **Required** — What needs to be found
+- **Method / Formula** — Which formula or concept applies
+- **Step-by-step Solution** — Full calculations with explanation
+- **Verification** — Check that the answer is correct
+- **Final Answer** — Clearly stated final result
+
+Answer:"""
+    return _ask(llm, prompt)
+
+
+# =========================================================
+# IMAGE QUESTION SOLVER
+# =========================================================
+
+def solve_image_question(llm, image_bytes: bytes, image_type: str) -> str:
+    """Read a question from an image and solve it step by step."""
+    b64_image = base64.b64encode(image_bytes).decode("utf-8")
+
+    message = HumanMessage(
+        content=[
             {
-                "role": "assistant",
-                "content": (
-                    "Hi! I'm EduBot, your AI Tutor. 👋\n\n"
-                    "Choose a subject and topic, then ask me anything. "
-                    "I'll help you understand concepts step by step."
+                "type": "text",
+                "text": (
+                    "You are EduBot, an AI tutor. Read the question in this image "
+                    "carefully, then solve it fully.\n\n"
+                    "Structure your answer as:\n"
+                    "- **Question Read from Image** — transcribe the question\n"
+                    "- **Topic** — subject/topic identified\n"
+                    "- **Given / Options** — data or MCQ options if present\n"
+                    "- **Step-by-step Solution** — full working\n"
+                    "- **Final Answer** — clear result"
                 ),
-                "time": datetime.now().strftime("%I:%M %p")
-            }
+            },
+            {
+                "type": "image_url",
+                "image_url": f"data:{image_type};base64,{b64_image}",
+            },
         ]
-
-    if "selected_subject" not in st.session_state:
-        st.session_state.selected_subject = "Computer Science"
-
-    if "selected_topic" not in st.session_state:
-        st.session_state.selected_topic = "Programming Fundamentals"
-
-
-def add_message(role, content):
-    st.session_state.tutor_messages.append(
-        {
-            "role": role,
-            "content": content,
-            "time": datetime.now().strftime("%I:%M %p")
-        }
     )
 
-
-# =========================================================
-# DEMO AI RESPONSE
-# =========================================================
-
-def generate_response(question):
-
-    question_lower = question.lower()
-
-    if "what is" in question_lower or "define" in question_lower:
-        return (
-            "Great question! Let's understand it simply. 💡\n\n"
-            "A concept is easier to understand when we break it into "
-            "three parts:\n\n"
-            "**1. Definition** — What it means.\n\n"
-            "**2. Purpose** — Why we use it.\n\n"
-            "**3. Example** — How it works in a real situation.\n\n"
-            "If you want, I can also explain this topic with a simple "
-            "example or a small diagram."
-        )
-
-    if "example" in question_lower:
-        return (
-            "Sure! Here's a simple example. 🧠\n\n"
-            "Imagine you're learning programming. Instead of trying to "
-            "understand the entire program at once, divide it into small "
-            "parts such as variables, conditions, loops, and functions.\n\n"
-            "This makes the concept much easier to understand and remember."
-        )
-
-    if "help" in question_lower:
-        return (
-            "Of course! 🤖\n\n"
-            "Tell me the exact concept you're struggling with and I'll "
-            "break it down step by step.\n\n"
-            "You can ask things like:\n"
-            "• Explain this concept simply\n"
-            "• Give me an example\n"
-            "• Test me with questions\n"
-            "• Explain it like I'm a beginner"
-        )
-
-    return (
-        "That's a good question! 🤖\n\n"
-        f"Let's work through **{question}** step by step.\n\n"
-        "First, identify the main idea behind the question. "
-        "Then break the problem into smaller parts and connect each "
-        "part to an example.\n\n"
-        "Would you like me to explain this in a **simple way**, "
-        "give you an **example**, or **quiz you** on it?"
-    )
-
-
-def handle_prompt(prompt_text):
-    """Send a question (typed or from a quick-action button) and rerun."""
-    add_message("user", prompt_text)
-    add_message("assistant", generate_response(prompt_text))
-    st.rerun()
+    response = llm.invoke([message])
+    return getattr(response, "content", str(response))
 
 
 # =========================================================
-# CUSTOM CSS  (safe as-is: <style> is read literally by markdown,
-# it never suffers from the blank-line code-block bug)
+# TEACH ME MODE
 # =========================================================
 
-def tutor_styles():
+def start_teach_me(llm, topic: str, level: str) -> str:
+    """Start a Teach Me Mode lesson: explain one concept, then ask a checking question."""
+    prompt = f"""You are EduBot, running "Teach Me Mode" — an interactive teaching workflow.
 
-    st.markdown(
-        """
-        <style>
+Topic: {topic}
+Student level: {level}
 
-        .tutor-header {
-            background: linear-gradient(135deg, #0B1F3A 0%, #123B5D 100%);
-            padding: 30px 34px;
-            border-radius: 20px;
-            margin-bottom: 22px;
-            color: white;
-            box-shadow: 0 8px 25px rgba(11, 31, 58, 0.14);
-            position: relative;
-            overflow: hidden;
-        }
+Instructions:
+1. Explain ONE key concept about this topic, appropriate for the student's level.
+2. Keep the explanation focused and not too long.
+3. At the end, ask exactly ONE short checking question to test the student's understanding
+   of what you just explained.
+4. Clearly mark the checking question by starting it on its own line with "CHECKING QUESTION:".
 
-        .tutor-header::after {
-            content: "";
-            position: absolute;
-            width: 220px;
-            height: 220px;
-            background: rgba(98, 214, 200, 0.12);
-            border-radius: 50%;
-            right: -60px;
-            top: -90px;
-        }
-
-        .tutor-header-label {
-            color: #62D6C8;
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: 1.6px;
-            margin-bottom: 8px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .tutor-header h1 {
-            margin: 0;
-            font-size: 32px;
-            font-weight: 800;
-            color: white;
-            position: relative;
-            z-index: 2;
-        }
-
-        .tutor-header p {
-            margin-top: 8px;
-            margin-bottom: 0;
-            color: #C9DCE9;
-            font-size: 14px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .chat-card {
-            background: white;
-            border: 1px solid #E6EBF0;
-            border-radius: 20px;
-            padding: 22px;
-            box-shadow: 0 6px 22px rgba(11, 31, 58, 0.06);
-        }
-
-        .chat-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #0B1F3A;
-            font-size: 17px;
-            font-weight: 800;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #EDF0F3;
-            margin-bottom: 18px;
-        }
-
-        .chat-scroll {
-            max-height: 480px;
-            overflow-y: auto;
-            padding-right: 6px;
-        }
-
-        .chat-scroll::-webkit-scrollbar { width: 6px; }
-        .chat-scroll::-webkit-scrollbar-thumb {
-            background: #D8E2E7;
-            border-radius: 10px;
-        }
-
-        .message-row {
-            display: flex;
-            align-items: flex-end;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .message-row.user { justify-content: flex-end; }
-        .message-row.assistant { justify-content: flex-start; }
-
-        .message-avatar {
-            width: 30px;
-            height: 30px;
-            min-width: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 15px;
-            background: #E6FFFA;
-        }
-
-        .message-bubble {
-            max-width: 76%;
-            padding: 13px 16px;
-            border-radius: 16px;
-            font-size: 14px;
-            line-height: 1.65;
-        }
-
-        .assistant-message {
-            background: #F1F7F8;
-            color: #253746;
-            border-bottom-left-radius: 4px;
-        }
-
-        .user-message {
-            background: #0F766E;
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-
-        .message-time {
-            font-size: 10px;
-            opacity: 0.65;
-            margin-top: 7px;
-        }
-
-        .section-label {
-            color: #0B1F3A;
-            font-size: 13px;
-            font-weight: 800;
-            letter-spacing: 0.3px;
-            margin: 4px 0 10px 2px;
-        }
-
-        .topic-status {
-            background: #EFF9F7;
-            border: 1px solid #D5EFEB;
-            border-radius: 14px;
-            padding: 13px 15px;
-            margin: 6px 0 20px 0;
-        }
-
-        .topic-status-title {
-            font-size: 10.5px;
-            color: #5B7275;
-            font-weight: 700;
-            letter-spacing: 0.6px;
-        }
-
-        .topic-status-value {
-            font-size: 14px;
-            color: #0F766E;
-            font-weight: 800;
-            margin-top: 3px;
-        }
-
-        div[data-testid="stTextInput"] input {
-            border-radius: 14px !important;
-            border: 1px solid #DCE4E9 !important;
-            padding: 14px !important;
-        }
-
-        div[data-testid="stTextInput"] input:focus {
-            border-color: #0F766E !important;
-            box-shadow: 0 0 0 1px #0F766E !important;
-        }
-
-        .stButton > button {
-            border-radius: 12px !important;
-            border: 1px solid #E0E7EB !important;
-            background: white !important;
-            color: #173047 !important;
-            font-weight: 700 !important;
-            transition: all 0.18s ease !important;
-        }
-
-        .stButton > button:hover {
-            border-color: #0F766E !important;
-            color: #0F766E !important;
-            transform: translateY(-1px);
-        }
-
-        button[kind="primary"] {
-            background: #0F766E !important;
-            border: none !important;
-            color: white !important;
-        }
-
-        button[kind="primary"]:hover {
-            background: #0B5A54 !important;
-            color: white !important;
-        }
-
-        /* =========================================
-           QUICK ACTION CARDS
-           (targets the keyed containers created with
-           st.container(key="qa_card_N") below)
-        ========================================= */
-
-        div[class*="st-key-qa_card_"] {
-            background: white;
-            border: 1px solid #E5EAEE;
-            border-radius: 14px;
-            padding: 10px 14px 4px 14px;
-            margin-bottom: 10px;
-            transition: all 0.18s ease;
-        }
-
-        div[class*="st-key-qa_card_"]:hover {
-            border-color: #62CFC3;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(15, 118, 110, 0.08);
-        }
-
-        div[class*="st-key-qa_card_"] .stButton > button {
-            text-align: left !important;
-            justify-content: flex-start !important;
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-            font-size: 14px !important;
-            padding: 4px 2px !important;
-        }
-
-        div[class*="st-key-qa_card_"] .stButton > button:hover {
-            color: #0F766E !important;
-            transform: none !important;
-        }
-
-        div[class*="st-key-qa_card_"] [data-testid="stCaptionContainer"] {
-            margin-top: 1px !important;
-            padding-left: 2px;
-        }
-
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+Begin the lesson now."""
+    return _ask(llm, prompt)
 
 
-# =========================================================
-# BUILD THE ENTIRE CHAT CARD AS ONE HTML STRING
-# (fixes both the code-block bug AND the "divs not really
-# wrapping messages" bug, since it's all one real element)
-# =========================================================
+def evaluate_teach_me(
+    llm,
+    topic: str,
+    checking_question: str,
+    student_response: str,
+    previous_teaching: str,
+    level: str,
+) -> str:
+    """Evaluate the student's answer, correct misconceptions, and continue the lesson."""
+    prompt = f"""You are EduBot, running "Teach Me Mode" for topic: {topic}
+Student level: {level}
 
-def render_chat_card():
+Previous teaching:
+{previous_teaching}
 
-    bubbles = []
-    for message in st.session_state.tutor_messages:
-        role = message["role"]
-        content_html = message["content"].replace(chr(10), "<br>")
+Checking question you asked: {checking_question}
+Student's answer: {student_response}
 
-        if role == "assistant":
-            bubbles.append(_html(f"""
-                <div class="message-row assistant">
-                    <div class="message-avatar">🤖</div>
-                    <div class="message-bubble assistant-message">
-                        <div>{content_html}</div>
-                        <div class="message-time">EduBot • {message["time"]}</div>
-                    </div>
-                </div>
-                """))
-        else:
-            bubbles.append(_html(f"""
-                <div class="message-row user">
-                    <div class="message-bubble user-message">
-                        <div>{content_html}</div>
-                        <div class="message-time">You • {message["time"]}</div>
-                    </div>
-                </div>
-                """))
+Instructions:
+1. Evaluate whether the student's answer is correct, partially correct, or incorrect.
+2. Give clear, encouraging feedback and correct any misconceptions.
+3. Then teach the NEXT concept in this topic (one concept at a time).
+4. End with exactly ONE new checking question, marked on its own line starting with
+   "CHECKING QUESTION:".
 
-    messages_html = "\n".join(bubbles)
-
-    card_html = _html(f"""
-        <div class="chat-card">
-            <div class="chat-title">🤖 <span>Chat with EduBot</span></div>
-            <div class="chat-scroll">
-                {messages_html}
-            </div>
-        </div>
-        """)
-
-    st.markdown(card_html, unsafe_allow_html=True)
+Continue the lesson now."""
+    return _ask(llm, prompt)
 
 
-# =========================================================
-# AI TUTOR PAGE
-# =========================================================
+def extract_checking_question(response: str) -> str:
+    """Pull the checking question out of a Teach Me Mode response."""
+    match = re.search(r"CHECKING QUESTION:\s*(.+)", response, re.IGNORECASE)
+    if match:
+        return match.group(1).strip()
 
-def ai_tutor_page():
+    # Fallback: last line ending in a question mark
+    lines = [line.strip() for line in response.strip().splitlines() if line.strip()]
+    for line in reversed(lines):
+        if line.endswith("?"):
+            return line
 
-    initialize_tutor()
-    tutor_styles()
+    return ""
 
-    # HEADER
-    st.markdown(_html("""
-        <div class="tutor-header">
-            <div class="tutor-header-label">✦ YOUR AI LEARNING COMPANION</div>
-            <h1>AI Tutor 🤖</h1>
-            <p>Ask questions, understand difficult concepts, and learn at your own pace.</p>
-        </div>
-        """), unsafe_allow_html=True)
 
-    left, right = st.columns([2.4, 1], gap="large")
+class TeachMeSession:
+    """Convenience object that tracks the state of a Teach Me Mode session."""
 
-    # =====================================================
-    # LEFT — CHAT
-    # =====================================================
-    with left:
+    def __init__(self, topic: str, level: str = "Beginner"):
+        self.topic = topic
+        self.level = level
+        self.previous_teaching = ""
+        self.checking_question = ""
+        self.history = []
 
-        render_chat_card()
+    def update_lesson(self, response: str):
+        self.previous_teaching = response
+        self.checking_question = extract_checking_question(response)
+        self.history.append({"role": "tutor", "content": response})
 
-        st.write("")
-        question = st.text_input(
-            "Ask your tutor",
-            placeholder="Ask anything about your topic...",
-            label_visibility="collapsed",
-            key="tutor_input"
-        )
-
-        send_col, clear_col = st.columns([4, 1])
-
-        with send_col:
-            if st.button("Send question  ➜", use_container_width=True, type="primary"):
-                if question.strip():
-                    handle_prompt(question.strip())
-
-        with clear_col:
-            if st.button("Clear", use_container_width=True):
-                st.session_state.tutor_messages = []
-                add_message("assistant", "Chat cleared! ✨ What would you like to learn?")
-                st.rerun()
-
-    # =====================================================
-    # RIGHT — CONTEXT + QUICK ACTIONS
-    # =====================================================
-    with right:
-
-        st.markdown('<div class="section-label">Learning context</div>', unsafe_allow_html=True)
-
-        subject = st.selectbox(
-            "Subject",
-            [
-                "Computer Science", "Artificial Intelligence", "Programming",
-                "Database Systems", "Computer Networks", "Software Engineering"
-            ],
-            key="subject_selector"
-        )
-
-        topics = {
-            "Computer Science": ["Programming Fundamentals", "Data Structures", "Algorithms", "Operating Systems"],
-            "Artificial Intelligence": ["Machine Learning", "Neural Networks", "Computer Vision", "AI Fundamentals"],
-            "Programming": ["Variables & Data Types", "Functions", "Loops", "Object-Oriented Programming"],
-            "Database Systems": ["SQL", "Normalization", "ER Diagrams", "Transactions"],
-            "Computer Networks": ["OSI Model", "TCP/IP", "Routing", "Network Security"],
-            "Software Engineering": ["SDLC", "Requirements Engineering", "Software Testing", "Agile Development"]
-        }
-
-        topic = st.selectbox("Topic", topics[subject], key="topic_selector")
-
-        st.markdown(_html(f"""
-            <div class="topic-status">
-                <div class="topic-status-title">CURRENT TOPIC</div>
-                <div class="topic-status-value">{topic}</div>
-            </div>
-            """), unsafe_allow_html=True)
-
-        # QUICK ACTIONS — real, clickable cards
-        st.markdown('<div class="section-label">Quick actions</div>', unsafe_allow_html=True)
-
-        quick_actions = [
-            ("💡", "Explain simply", "Understand the concept", f"Explain {topic} simply"),
-            ("🧩", "Give an example", "See it in practice", f"Give me an example of {topic}"),
-            ("📝", "Quiz me", "Test your knowledge", f"Quiz me on {topic}"),
-            ("📌", "Summarize", "Review key points", f"Summarize {topic}"),
-        ]
-
-        for i, (icon, title, description, prompt_text) in enumerate(quick_actions):
-            with st.container(key=f"qa_card_{i}"):
-                clicked = st.button(f"{icon}  {title}", key=f"qa_btn_{i}", use_container_width=True)
-                st.caption(description)
-            if clicked:
-                handle_prompt(prompt_text)
+    def add_student_answer(self, student_response: str):
+        self.history.append({"role": "student", "content": student_response})
