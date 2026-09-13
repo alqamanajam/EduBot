@@ -1,7 +1,5 @@
 streamlit
 python-dotenv
-
-# RAG & Knowledge Engine ───────────────────────────
 langchain
 langchain-community
 langchain-text-splitters
@@ -13,17 +11,11 @@ langchain-classic
 chromadb
 sentence-transformers
 pypdf
-
-#  AI Tutor, Math & Image Solver ───────────────────
 google-generativeai
 google-genai
 google-api-python-client
 Pillow
-
-# ── LangGraph ────────────────────────────────────────────────
 langgraph
 langgraph-prebuilt
 langgraph-checkpoint
-
-— Quiz & Progress ──────────────────
 pandas
