@@ -3,9 +3,9 @@ EduBot — AI-Powered Personal Study Assistant
 Team Leader / Integration: Alqama Najam
 
 Modules:
-- RAG & Knowledge Engine      → Umar Saeed Jan   (modules/rag_engine.py)
-- AI Tutor, Math & Image      → Abdul Qudoos     (modules/ai_tutor.py)
-- Quiz, Progress & UI         → Samrah           (modules/quiz.py)
+- RAG & Knowledge Engine      → Umar Saeed Jan   (rag_engine.py)
+- AI Tutor, Math & Image      → Abdul Qudoos     (ai_tutor.py)
+- Quiz, Progress & UI         → Samrah           (quiz.py)
 """
 
 import os
@@ -80,7 +80,7 @@ def call_gemini_direct(prompt: str) -> str:
 # ── LLM Instance (Abdul's module) ─────────────────────────────────────────────
 @st.cache_resource
 def get_llm():
-    from modules.ai_tutor import create_llm
+    from ai_tutor import create_llm
     return create_llm()
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -178,9 +178,9 @@ elif menu == "📄 Document Q&A (RAG)":
         if "vectorstore" not in st.session_state or st.session_state.get("last_file") != uploaded_file.name:
             with st.spinner("⏳ Building knowledge base from your PDF... (~30 seconds)"):
                 try:
-                    from modules.rag_engine import build_knowledge_base, get_retriever
-                    from modules.gemini_llm import create_llm as rag_llm
-                    from modules.rag_chain import create_rag_chain
+                    from rag_engine import build_knowledge_base, get_retriever
+                    from gemini_llm import create_llm as rag_llm
+                    from rag_chain import create_rag_chain
 
                     vectorstore, chunks = build_knowledge_base(tmp_path)
                     retriever = get_retriever(vectorstore, top_k=4)
@@ -203,7 +203,7 @@ elif menu == "📄 Document Q&A (RAG)":
         if st.button("🔍 Get Answer", type="primary") and question.strip():
             with st.spinner("🤔 EduBot is searching your document..."):
                 try:
-                    from modules.rag_engine import get_sources
+                    from rag_engine import get_sources
                     response = st.session_state.rag_chain.invoke(question)
                     docs = st.session_state.vectorstore.similarity_search(question, k=4)
                     sources = get_sources(docs)
@@ -228,7 +228,7 @@ elif menu == "🧑‍🏫 AI Tutor":
     check_api_key()
 
     try:
-        from modules.ai_tutor import tutor_answer
+        from ai_tutor import tutor_answer
         llm = get_llm()
     except Exception as e:
         st.error(f"❌ Module load error: {e}")
@@ -271,7 +271,7 @@ elif menu == "🎯 Teach Me Mode":
     check_api_key()
 
     try:
-        from modules.ai_tutor import (
+        from ai_tutor import (
             start_teach_me, evaluate_teach_me, extract_checking_question
         )
         llm = get_llm()
@@ -375,7 +375,7 @@ elif menu == "🔢 Math Solver":
     check_api_key()
 
     try:
-        from modules.ai_tutor import solve_math
+        from ai_tutor import solve_math
         llm = get_llm()
     except Exception as e:
         st.error(f"❌ Module load error: {e}")
@@ -415,7 +415,7 @@ elif menu == "🖼️ Image Question Solver":
     check_api_key()
 
     try:
-        from modules.ai_tutor import solve_image_question
+        from ai_tutor import solve_image_question
         llm = get_llm()
     except Exception as e:
         st.error(f"❌ Module load error: {e}")
