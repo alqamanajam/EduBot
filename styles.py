@@ -1688,6 +1688,24 @@ section[data-testid="stSidebar"] p,
 section[data-testid="stSidebar"] .stMarkdown {
     color: #FFFFFF !important;
 }
+  section[data-testid="stSidebar"] [data-testid="stRadio"] > div {
+    gap: 4px;
+}
+
+section[data-testid="stSidebar"] [data-testid="stRadio"] label {
+    background: rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 10px 14px !important;
+    margin: 2px 0;
+    transition: all 0.18s ease;
+    display: flex;
+    width: 100%;
+}
+
+section[data-testid="stSidebar"] [data-testid="stRadio"] label:hover {
+    background: rgba(42,157,143,0.20);
+    transform: translateX(3px);
+}    
         </style>
         """,
 
